@@ -1,11 +1,9 @@
-#
+
 **Android Developer class**
 
-## ***Notes  on the classOfAnyName***
 
 
-
-## ***Lesson 2***
+# ***Lesson 2***
 
 
 An activity is a single focused thing that the user can do. Activities are responsible for creating the window that your application uses to draw and receive events from the system. Activities are written in Java, extending from the Activity class.
@@ -15,13 +13,13 @@ An activity creates views to show the user information, and to let the user inte
 Type of View :  UI components
                 Container Views
 
-### Questions:
+## Questions:
 
 1.  When are the views in the emulator supposed to change?  XML layout seems immediate, not so  sure about Java
 2.  Diff between the layout emulator and the simulator?
-##
 
-## ***Lesson 3  Connect to the Internet***
+
+# ***Lesson 3  Connect to the Internet***
 
 **Exercise T02.03**
 
@@ -64,9 +62,18 @@ public boolean onOptionsItemSelected(MenuItem item) {
     return super.onOptionsItemSelected(item);
 }
 ```
-## ***Lesson 4***
 
-## ***Lesson 5***
+## Connecting to the Internet
+
+The first step is to set permissions to the AndroidManifest.xml file:
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+
+# ***Lesson 4 RecyclerView***
+
+# ***Lesson 5 Intents***
 **Exercise T02.05**
 **Questions:**
 
@@ -100,17 +107,17 @@ public class GithubQueryTask extends AsyncTask<URL, Void, String>{
      }
 }
 ```
-***Lesson T03.07  Recycler View.***
+# ***Lesson T03.07  Recycler View.***
  See this link in forum:  https://discussions.udacity.com/t/lesson-4-recycler-view-notes/533863/9?u=27ed476db8ea6909f270
 
+# ***Lesson 6 Lifecycle***
 
 
-
-***Lesson 7 Preferences***
+# ***Lesson 7 Preferences***
 
 Fragments allow you to have multiple activities on a screen.  Since only one Activity is allowed, you have to use Fragments t make it happen.
 
-***Lesson 8 Databases***
+# ***Lesson 8 Databases***
 
 Databases start with a contract class which lays out the database:
 
@@ -142,10 +149,10 @@ create table contacts (_id integer primary key autoincrement, name text, address
    phone text);
 ```
 
+# ***Lesson 9 Content Providers
 
-
-***Lesson 10 Content Provider***
-Questions:
+# ***Lesson 10 Building a Content Provider***
+## Questions:
    1. What is being passed in mContext in th following line:
 
    ```Java
@@ -190,15 +197,64 @@ public static final int CODE_WEATHER = 100; //The whole table, starts on even 10
    }
 ```
 
+# ***Lesson 11 Background Tasks***
+
+# ***Lesson 12 Completing***
 
 
-## ***Problems with Android Studio***
+## Styles:  values/styles.
+```XML
+    <style name="folderStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="inboxStyle" parent="folderStyle">
+        <item name="android:textStyle">bold</item>
+    </style>
+```
+## Selectors
+Create an file in res/drawable, make sure root: selector.
+So in the file "touch_selector.xml":
+```xml   
+<selector>
+   <item android:drawable="@color/activated"
+      android:state_activated="true"
+      android:state_focused="false"/>
+</selector>
+```
+Then in the xml layout file set the background to
+```XML
+<ConstraintLayout
+   android:background="@drawable/touch_selector"
+   >
+```
+## Resource Qualifiers
+Create a "Smallest Screen Width" qualified dimens.xml by rt-clk values/New/values resource file  and select smallest width qualifier.
+The same can be done for landscape layouts as well
+
+Any resource can have a multiple qualifiers that can be triggered by screen width, landscape
+mode and many other things I know nothing about!
+
+# ***Lesson 13 Polishing the UI***
+
+## Data Binding, Lesson 13.12
+In build.gradle (app) inside android section set
+   dataBinding.enabled = true;
+
+Then in the layout.xml file for the activity, make <layout></layout> the root tag
+
+# ***Android Studio***
 
 
-### Fail to create new Activity using New/Activity.
+## Fail to create new Activity using New/Activity.
 Solved by deleting C:/Tmp directory
 
 ## Favorite AS Shortcuts
+
+## Resoures not updating
+Cache is corrupt.  /File/Invalidate Caches-Restart
 
 Ctrl-C copy line
 Ctrl-D duplicate line
@@ -208,4 +264,6 @@ Ctrl F7 Find usages in file
 Alt F7 Find usages in project
 
 Ctrl-Q info on class
-Ctrl-W  expand selection.
+Ctrl-W  expand selection
+
+Shft-Enter new line (without having to position at end of line)
