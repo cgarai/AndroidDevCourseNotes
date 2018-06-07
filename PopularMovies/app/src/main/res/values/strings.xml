@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+
+    <!--The Movie Database Strings-->
+    <!--Uncomment the line below and insert your API key-->
+    <!--<string name="my_API_key">YOUR_API_KEY_HERE</string>-->
+    <string name="Base_URL">http://image.tmdb.org/t/p/</string>
+    <string name="poster_image_width">w185</string>
+    <string name="popular_movie_search">popular</string>
+    <string name="top_rated_movie_search">top_rated</string>
+
+    <!--Menu Strings-->
+    <string name="action_settings">Settings</string>
+    <string name="action_popular">Popular</string>
+    <string name="action_top_rated">Top Rated</string>
+</resources>
