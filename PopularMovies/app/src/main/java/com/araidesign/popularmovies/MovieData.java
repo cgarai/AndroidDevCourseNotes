@@ -1,11 +1,14 @@
 package com.araidesign.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MovieData {
+public class MovieData implements Parcelable {
     private String title;
     private String poster_path;
     private int id;
@@ -17,10 +20,9 @@ public class MovieData {
     private String release_date_string;
     private String  backdrop_path;
 
-
-    public void MovieData(){
+//  TODO Do I need a constructor?
+    public void  MovieData(){
 //        this.genre_ids = new ArrayList<>();
-        return;
     }
     public void setTitle(String title){
         this.title = title;
@@ -63,9 +65,7 @@ public class MovieData {
 
     public void setGenre_ids(ArrayList<Integer> genre_ids){
         this.genre_ids = new ArrayList<>();
-        for(int i=0; i<genre_ids.size(); i++){
-            this.genre_ids.add( genre_ids.get(i));
-        }
+        this.genre_ids.addAll(genre_ids);
     }
     public ArrayList<Integer> getGenre_ids(){
         return genre_ids;
@@ -93,6 +93,11 @@ public class MovieData {
 
     }
 
+    public String getRelease_date_string() {
+        return release_date_string;
+    }
+
+
     public void setBackdrop_path(String backdrop_path) {
         this.backdrop_path = backdrop_path;
     }
@@ -102,4 +107,51 @@ public class MovieData {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.poster_path);
+        dest.writeString(this.backdrop_path);
+        dest.writeInt(this.vote_count);
+        dest.writeString(this.overview);
+        dest.writeString(this.release_date_string);
+        dest.writeSerializable(this.release_date);
+        dest.writeInt(this.id);
+        dest.writeDouble(this.popularity);
+        dest.writeList(this.genre_ids);
+    }
+
+    public MovieData() {
+    }
+
+    protected MovieData(Parcel in) {
+        this.title = in.readString();
+        this.poster_path = in.readString();
+        this.backdrop_path = in.readString();
+        this.vote_count = in.readInt();
+        this.overview = in.readString();
+        this.release_date_string = in.readString();
+        this.release_date = (Calendar) in.readSerializable();
+        this.id = in.readInt();
+        this.popularity = in.readDouble();
+        this.genre_ids = new ArrayList<>();
+        in.readList(this.genre_ids, Integer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<MovieData> CREATOR = new Parcelable.Creator<MovieData>() {
+        @Override
+        public MovieData createFromParcel(Parcel source) {
+            return new MovieData(source);
+        }
+
+        @Override
+        public MovieData[] newArray(int size) {
+            return new MovieData[size];
+        }
+    };
 }

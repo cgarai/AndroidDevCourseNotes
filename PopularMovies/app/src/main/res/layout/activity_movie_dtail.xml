@@ -4,11 +4,12 @@
     android:layout_height="match_parent">
 
 
-
     <ImageView
         android:id="@+id/iv_detail_poster_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="0dp"
-        android:contentDescription="posterImage" />
+        android:adjustViewBounds="false"
+        android:contentDescription="@string/"
+        android:cropToPadding="false" />
 </android.support.constraint.ConstraintLayout>

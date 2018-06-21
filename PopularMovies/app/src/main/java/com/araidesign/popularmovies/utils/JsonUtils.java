@@ -26,10 +26,6 @@ public class JsonUtils {
         MovieData movieData;
 
         dbRequest = new JSONObject(json);
-//        Iterator<String> keyList = dbRequest.keys();
-
-//        TODO: I need to pass the JSON array and convert it in a separate function for display
-//        That way I can pass the JSON string to the DetailActivity with intent EXTRA
 
         movieArrayJSON = dbRequest.getJSONArray("results");
 
@@ -44,7 +40,7 @@ public class JsonUtils {
             movieData.setPoster_path(movieJson.getString("poster_path"));
             movieData.setBackdrop_path(movieJson.getString("backdrop_path"));
             movieData.setOverview(movieJson.getString("overview"));
-            movieData.setRelease_date("release_date");
+            movieData.setRelease_date(movieJson.getString("release_date"));
 
             // TODO: Could this array parsing be more efficient??
 

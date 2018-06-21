@@ -2,7 +2,6 @@ package com.araidesign.popularmovies;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,20 +20,27 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ItemClickListener {
 
     private RecyclerView mRecyclerView;
-    private MovieAdapter mMovieAdapter;
+    private  MovieAdapter mMovieAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<MovieData> allMovieData = new ArrayList<MovieData>();
+    private static ArrayList<MovieData> allMovieData = new ArrayList<>();
 
-    public String api_key;
+    private  String api_key;
 
     private static final int NUM_MOVIES = 20;
     private Toast mToast;
-    private ProgressBar mLoadingIndicator;
+    ProgressBar mLoadingIndicator;
+    private static boolean onAppStart = true;
+
+//    public MainActivity(){
+//
+//        String api_key = getString(R.string.my_API_key);
+////        makePopularMovieSearch();
+//    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,29 +49,37 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
 
         api_key = getString(R.string.my_API_key);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.movie_recycler_view);
-        mRecyclerView.setOnClickListener(launchDetailActivity());
+        mRecyclerView = findViewById(R.id.movie_recycler_view);
 
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-//        allMovieData = GetDataTest.loadSamplePosters();
         mMovieAdapter = new MovieAdapter(this, allMovieData);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         mLoadingIndicator =  findViewById(R.id.pb_load_indicator);
 
+        if (onAppStart){
+            onAppStart = false;
+            makePopularMovieSearch();
+
+        }
+//        TODO 2: Having trouble getting the posters to display upon opening and device rotation
+//        Device rotation was fixed when I converted movieSearchTask to static, per warnings.
+//        Tried using scrollBy with null values to get a redraw
+//        mMovieAdapter.notifyDataSetChanged();
+//        mRecyclerView.scrollBy(0,0);
 
     }
 
 
-    private View.OnClickListener launchDetailActivity(int position){
+    private void launchDetailActivity(int position){
         String movieJson;
 
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_POSITION,position);
-//        intent.putExtra(DetailActivity.MOVIE_DATA, (Parcelable) allMovieData.get(position));
-        intent.putExtra(DetailActivity.MOVIE_DATA, );
+        intent.putExtra(DetailActivity.MOVIE_DATA, allMovieData.get(position));
+        startActivity(intent);
 
 
     }
@@ -92,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
                 }
                 String toastMessage = "What?! Nothing Clicked?";
                 mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
+                mToast.show();
         }
         return super.onOptionsItemSelected(item);
 
@@ -103,30 +118,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
         launchDetailActivity(clickedItemIndex);
 
 
-
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        String toastMessage = "Item #" + clickedItemIndex + " clicked.";
-        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
-
-        mToast.show();
+//
+//        if (mToast != null) {
+//            mToast.cancel();
+//        }
+//        String toastMessage = "Item #" + clickedItemIndex + " clicked.";
+//        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
+//
+//        mToast.show();
     }
 
     void makePopularMovieSearch() {
         allMovieData.clear();
-        URL url = NetworkUtils.buildTMDBQueryURL(getString(R.string.my_API_key),getString(R.string.popular_movie_search));
+        URL url = NetworkUtils.buildTMDBQueryURL(api_key,getString(R.string.popular_movie_search));
 
-        new movieSearchTask().execute(url);
+        new MovieSearchTask().execute(url);
     }
 
     void makeTopRatedMovieSearch(){
         allMovieData.clear();
-        URL url = NetworkUtils.buildTMDBQueryURL(getString(R.string.my_API_key),getString(R.string.top_rated_movie_search));
-        new movieSearchTask().execute(url);
+        URL url = NetworkUtils.buildTMDBQueryURL(api_key,getString(R.string.top_rated_movie_search));
+        new MovieSearchTask().execute(url);
 
     }
-    public class movieSearchTask extends AsyncTask<URL, Void, ArrayList<MovieData>> {
+
+//    TODO 3:  I get a warning that AsyncTask should be static, but  then mLoadingIndicator and mMovieAdapter need to be static, but that causes warnings as well
+    public  class MovieSearchTask extends AsyncTask<URL, Void, ArrayList<MovieData>> {
 
         @Override
         protected void onPreExecute() {
@@ -137,13 +154,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
 
         @Override
         protected  ArrayList<MovieData> doInBackground(URL... url) {
-            String movieListJSON = null;
+            String movieListJSON;
             ArrayList<MovieData> movieDataFromJson = new ArrayList<>();
             try {
                 //Go get the json string from the network
                 movieListJSON = NetworkUtils.getMovieDBJSON(url[0]);
 
-//       TODO: Change this to return movieListJSON.  Then JSON data is available to pass to intent
                 try {
                     //Parse that json string
                     movieDataFromJson = JsonUtils.parseTMDBRequest(movieListJSON);
@@ -161,12 +177,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Item
             mLoadingIndicator.setVisibility(View.INVISIBLE);
 
 // TODO: Is this the best method to copy ArrayList ??
-// TODO: Don't need to do this here.  Moving all this out so JSON is available
-//            allMovieData.addAll(movieData);
-            for(int i=0; i<movieData.size(); i++){
-                allMovieData.add(movieData.get(i));
-            }
-//    TODO: MainActivity is not consistently getting the screen refresshed when selecting Popular or Top Rated
+            allMovieData.addAll(movieData);
+
+//    TODO 2: MainActivity is not consistently getting the screen refresshed when selecting Popular or Top Rated
             mMovieAdapter.notifyDataSetChanged();
 
         }

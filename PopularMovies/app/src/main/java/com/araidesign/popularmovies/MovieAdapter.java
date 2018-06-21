@@ -48,9 +48,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PosterViewHo
          * Constructor for PosterViewHolder
          * @param iv
          */
-        public PosterViewHolder(View iv) {
+        PosterViewHolder(View iv) {
             super(iv);
-            gridItemPosterView = (ImageView) itemView.findViewById(R.id.iv_poster_item);
+            gridItemPosterView =  iv.findViewById(R.id.iv_poster_item);
             iv.setOnClickListener(this);
         }
 
@@ -80,6 +80,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PosterViewHo
 
     @Override
     public void onBindViewHolder(@NonNull PosterViewHolder holder, int position) {
+//        TODO: Should this network image request be done with AsyncTask?
         URL poster_path = NetworkUtils.buildImageURL(movieDataArrayList.get(position).getPoster_path());
         Picasso.with(context).load(poster_path.toString()).into(holder.gridItemPosterView);
 
